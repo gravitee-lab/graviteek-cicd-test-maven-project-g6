@@ -65,7 +65,7 @@ jobs:
           secrethub_repo: << pipeline.parameters.secrethub_repo >>
       - gravitee/git_release:
           dry_run: << pipeline.parameters.dry_run >>
-          maven_container_image_tag: << pipeline.parameters.maven_container_image_tag >>
+          maven_container_image_tag: stable-latest
           maven_profile_id: << pipeline.parameters.maven_profile_id>>
           secrethub_org: << pipeline.parameters.secrethub_org >>
           secrethub_repo: << pipeline.parameters.secrethub_repo >>
