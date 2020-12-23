@@ -59,6 +59,7 @@
             <exclude>node/**</exclude>
             <exclude>node_modules/**</exclude>
             <exclude>src/libraries/**</exclude>
+            <exclude>**/*.java</exclude>
             <exclude>**/*.scss</exclude>
             <exclude>**/*.svg</exclude>
             <exclude>Jenkinsfile</exclude>
