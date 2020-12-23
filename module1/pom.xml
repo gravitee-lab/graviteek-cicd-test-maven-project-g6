@@ -3,14 +3,16 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-        <groupId>example.project.maven</groupId>
-        <artifactId>MavenModulesPomExample</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <groupId>gravitee-lab.io</groupId>
+        <artifactId>graviteek-component</artifactId>
+        <version>4.5.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
    </parent>
 
-  <artifactId>module1</artifactId>
-  <name>module1</name>
+  <name>graviteek-component-module1</name>
+  <groupId>gravitee-lab.io</groupId>
+  <artifactId>graviteek-component-module1</artifactId>
+  <version>4.5.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <properties>
