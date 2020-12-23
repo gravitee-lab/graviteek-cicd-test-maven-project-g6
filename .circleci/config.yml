@@ -25,7 +25,7 @@ parameters:
 orbs:
   docker: circleci/docker@1.5
   # gravitee: 'gravitee-io/gravitee@dev:1.0.2'
-  gravitee: gravitee-io/gravitee@dev:1.0.2
+  gravitee: gravitee-io/gravitee@dev:1.0.4
   secrethub: secrethub/cli@1.0.0
 jobs:
   empty_job:
