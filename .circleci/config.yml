@@ -1,17 +1,17 @@
-version: '2.1'
+version: 2.1
 
 parameters:
   gio_action:
     type: enum
-    enum: [release, blank]
-    default: blank
+    enum: [release, pr_build]
+    default: pr_build
   dry_run:
     type: boolean
     default: true
     description: "Run in dry run mode?"
   maven_profile_id:
     type: string
-    default: "gio-release"
+    default: "gravitee-dry-run"
     description: "Maven ID of the Maven profile to use for a dry run ?"
   secrethub_org:
     type: string
@@ -23,122 +23,41 @@ parameters:
     description: "SecretHub Repo to use to fetch secrets ?"
 
 orbs:
-  docker: circleci/docker@1.5
-  # gravitee: 'gravitee-io/gravitee@dev:1.0.2'
   gravitee: gravitee-io/gravitee@dev:1.0.4
-  secrethub: secrethub/cli@1.0.0
-jobs:
-  empty_job:
-    docker:
-     - image: alpine
-    resource_class: small
-    working_directory: /mnt/ramdisk
-    steps:
-      - run:
-          name: "This is a dummy empty job (isn't it ?)"
-          command: echo "No task is executed."
-  release_job:
-    machine:
-      image: 'ubuntu-1604:201903-01'
-      resource_class: medium
-    steps:
-      - checkout
-      - secrethub/install
-      - docker/install-docker-compose
-      - gravitee/mvn_prepare_release:
-          dry_run: << pipeline.parameters.dry_run >>
-          maven_container_image_tag: stable-latest
-          maven_profile_id: << pipeline.parameters.maven_profile_id>>
-          secrethub_org: << pipeline.parameters.secrethub_org >>
-          secrethub_repo: << pipeline.parameters.secrethub_repo >>
-      - gravitee/mvn_test_release:
-          dry_run: << pipeline.parameters.dry_run >>
-          maven_container_image_tag: stable-latest
-          maven_profile_id: << pipeline.parameters.maven_profile_id>>
-          secrethub_org: << pipeline.parameters.secrethub_org >>
-          secrethub_repo: << pipeline.parameters.secrethub_repo >>
-      - gravitee/mvn_release:
-          dry_run: << pipeline.parameters.dry_run >>
-          maven_container_image_tag: stable-latest
-          maven_profile_id: << pipeline.parameters.maven_profile_id>>
-          secrethub_org: << pipeline.parameters.secrethub_org >>
-          secrethub_repo: << pipeline.parameters.secrethub_repo >>
-      - gravitee/git_release:
-          dry_run: << pipeline.parameters.dry_run >>
-          maven_container_image_tag: stable-latest
-          maven_profile_id: << pipeline.parameters.maven_profile_id>>
-          secrethub_org: << pipeline.parameters.secrethub_org >>
-          secrethub_repo: << pipeline.parameters.secrethub_repo >>
-  dry_release_job:
-    machine:
-      image: 'ubuntu-1604:201903-01'
-      resource_class: medium
-    steps:
-      - checkout
-      - secrethub/install
-      - docker/install-docker-compose
-      - gravitee/mvn_prepare_release:
-          dry_run: << pipeline.parameters.dry_run >>
-          maven_container_image_tag: stable-latest
-          maven_profile_id: << pipeline.parameters.maven_profile_id>>
-          secrethub_org: << pipeline.parameters.secrethub_org >>
-          secrethub_repo: << pipeline.parameters.secrethub_repo >>
-      - gravitee/mvn_test_release:
-          dry_run: << pipeline.parameters.dry_run >>
-          maven_container_image_tag: stable-latest
-          maven_profile_id: << pipeline.parameters.maven_profile_id>>
-          secrethub_org: << pipeline.parameters.secrethub_org >>
-          secrethub_repo: << pipeline.parameters.secrethub_repo >>
-      - gravitee/mvn_release:
-          dry_run: << pipeline.parameters.dry_run >>
-          maven_container_image_tag: stable-latest
-          maven_profile_id: << pipeline.parameters.maven_profile_id>>
-          secrethub_org: << pipeline.parameters.secrethub_org >>
-          secrethub_repo: << pipeline.parameters.secrethub_repo >>
-      # - gravitee/git_release:
-          # dry_run: << pipeline.parameters.dry_run >>
-          # maven_container_image_tag: << pipeline.parameters.maven_container_image_tag >>
-          # maven_profile_id: << pipeline.parameters.maven_profile_id>>
-          # secrethub_org: << pipeline.parameters.secrethub_org >>
-          # secrethub_repo: << pipeline.parameters.secrethub_repo >>
+
 workflows:
-  # Blank process invoked when the test dev repo has a commit event, or pull request event
-  blank:
+  version: 2.1
+  pull_requests:
     when:
-      equal: [ blank, << pipeline.parameters.gio_action >> ]
+      equal: [ pr_build, << pipeline.parameters.gio_action >> ]
     jobs:
-      - empty_job:
+      - gravitee/pr-build:
           context: cicd-orchestrator
-  release_process:
+  release:
+    # see https://circleci.com/docs/2.0/configuration-reference/#logic-statement-examples
     when:
       and:
         - equal: [ release, << pipeline.parameters.gio_action >> ]
         - not: << pipeline.parameters.dry_run >>
     jobs:
-      - release_job:
+      # return to simple definition :
+      - gravitee/release:
           context: cicd-orchestrator
-          filters:
-            branches:
-              only:
-                - master
-                - 4.1.x
-                - 4.2.x
-                - 4.3.x
-                - 4.4.x
-  dry_release_process:
+          dry_run: << pipeline.parameters.dry_run >>
+          secrethub_org: << pipeline.parameters.secrethub_org >>
+          secrethub_repo: << pipeline.parameters.secrethub_repo >>
+          maven_profile_id: << pipeline.parameters.maven_profile_id >>
+  release_dry_run:
+    # see https://circleci.com/docs/2.0/configuration-reference/#logic-statement-examples
     when:
       and:
         - equal: [ release, << pipeline.parameters.gio_action >> ]
         - << pipeline.parameters.dry_run >>
     jobs:
-      - dry_release_job:
+      # return to simple definition :
+      - gravitee/release:
           context: cicd-orchestrator
-          filters:
-            branches:
-              only:
-                - master
-                - 4.1.x
-                - 4.2.x
-                - 4.3.x
-                - 4.4.x
-  version: 2.1
+          dry_run: << pipeline.parameters.dry_run >>
+          secrethub_org: << pipeline.parameters.secrethub_org >>
+          secrethub_repo: << pipeline.parameters.secrethub_repo >>
+          maven_profile_id: << pipeline.parameters.maven_profile_id >>
