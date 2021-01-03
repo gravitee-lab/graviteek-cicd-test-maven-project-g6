@@ -20,3 +20,5 @@ module2/.settings/org.eclipse.m2e.core.prefs
 settings.xml
 # ingore the [settings.xml] which contains secrets (password to artifactory)
 settings.xml
+# ingore the [settings.xml] which contains secrets (password to artifactory)
+settings.xml
