@@ -3,7 +3,7 @@
 
   <groupId>gravitee-lab-io.io</groupId>
   <artifactId>graviteek-component</artifactId>
-  <version>4.6.25-SNAPSHOT</version>
+  <version>4.6.25</version>
   <packaging>pom</packaging>
   <description>Maven modules example</description>
 

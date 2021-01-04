@@ -5,14 +5,14 @@
   <parent>
         <groupId>gravitee-lab-io.io</groupId>
         <artifactId>graviteek-component</artifactId>
-        <version>4.6.25-SNAPSHOT</version>
+        <version>4.6.25</version>
         <relativePath>../pom.xml</relativePath>
    </parent>
 
   <name>graviteek-component-module1</name>
   <groupId>gravitee-lab.io</groupId>
   <artifactId>graviteek-component-module1</artifactId>
-  <version>4.6.25-SNAPSHOT</version>
+  <version>4.6.25</version>
   <packaging>jar</packaging>
 
   <properties>
